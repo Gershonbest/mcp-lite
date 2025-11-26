@@ -4,27 +4,18 @@ from fastmcp import FastMCP
 from tavily import TavilyClient
 from dotenv import load_dotenv
 
-# --- Configuration ---
+
 load_dotenv()
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
-print(TAVILY_API_KEY)
 
-if not TAVILY_API_KEY:    
-    raise ValueError("Please set the TAVILY_API_KEY environment variable.")
 
 tavily = TavilyClient(api_key=TAVILY_API_KEY)
 mcp = FastMCP(name="ArxivExplorer")
-print("✅ ArxivExplorer server initialized.")
-
-# --- Dynamic Resource: Suggested AI research topics ---
 
 @mcp.resource("resource://ai/arxiv_topics")
 def arxiv_topics() -> List[str]:    
     return ["Transformer interpretability", "Efficient large-scale model training","Federated learning privacy", "Neural network pruning"]
 
-print("✅ Resource 'resource://ai/arxiv_topics' registered.")
-    # --- Tool: Search ArXiv for recent papers ---
-    # 
 @mcp.tool(annotations={"title": "Search Arxiv"})
 def search_arxiv(query: str, max_results: int = 5) -> List[Dict]:    
 
@@ -32,9 +23,6 @@ def search_arxiv(query: str, max_results: int = 5) -> List[Dict]:
     resp = tavily.search(query=f"site:arxiv.org {query}",max_results=max_results)
     return [{"title": r["title"].strip(), "url": r["url"]} for r in resp.get("results", [])]
 
-print("✅ Tools 'Search Arxiv' and 'Summarize Paper' registered.")
-
-# @mcp.tool(annotations={"title": "Summarize Paper"})
 
 @mcp.prompt
 def explore_topic_prompt(topic: str) -> str:
@@ -44,7 +32,6 @@ def explore_topic_prompt(topic: str) -> str:
         f"2. For each paper URL, call 'Summarize Paper' to extract its key contributions.\n"
         f"3. Combine all summaries into an overview report."
     )
-print("✅ Prompt 'explore_topic_prompt' registered.")
 
 if __name__ == "__main__":
     print("\n🚀 Starting ArxivExplorer Server...")
