@@ -1,0 +1,10 @@
+[project]
+name = "mcp-lite"
+version = "0.1.0"
+description = "Simple AI ArXiv Explorer MCP Server"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastmcp>=2.13.1",
+    "tavily-python>=0.7.13",
+]
